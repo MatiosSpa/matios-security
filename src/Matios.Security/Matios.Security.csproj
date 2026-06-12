@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!-- NuGet package identity -->
+    <PackageId>Matios.Security</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Matios SpA</Authors>
+    <Company>Matios SpA</Company>
+    <Description>Lightweight, dependency-free JOSE (JWE RFC 7516 / JWS RFC 7515) + JWT (RFC 7519) for .NET. BCL-only. MVP: JWE Compact dir+A256GCM (which Microsoft.IdentityModel cannot issue), JWS HS256 and Nested JWT — with a strict, whitelist-driven, anti-oracle API.</Description>
+    <PackageTags>jose;jwe;jws;jwt;rfc7516;rfc7515;rfc7519;encryption;token;security;matios</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/MatiosSpa/matios-security</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+    <!-- SourceLink (built into the .NET SDK) + symbol package -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\assets\icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- LOCKED ADR-0001 D2: BCL-only. No PackageReference/ProjectReference may
+       ever be added to this project. The dependency arrow points INTO this
+       package (consumers reference it), never out of it. -->
+
+</Project>

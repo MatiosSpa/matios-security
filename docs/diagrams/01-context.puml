@@ -1,0 +1,21 @@
+@startuml 01-context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title Matios.Security — C4 Level 1 (Context)
+
+Person(dev, "Consuming developer", ".NET developer issuing/validating JOSE/JWT tokens")
+
+System(security, "Matios.Security", "Dependency-free JOSE/JWT library: JWE (RFC 7516) + JWS (7515) + JWT (7519). Single NuGet package, BCL-only")
+
+System_Ext(app, "Consuming .NET application", "Any service that issues or validates signed/encrypted tokens (APIs, BFFs, background workers)")
+System_Ext(bcl, ".NET BCL", "System.Security.Cryptography (AesGcm, HMACSHA256, RandomNumberGenerator) + System.Text.Json")
+System_Ext(nuget, "NuGet feed", "nuget.org / GitHub Packages")
+System_Ext(idm, "Microsoft.IdentityModel", "TESTS ONLY: bidirectional interop verification. Never a package dependency")
+
+Rel(dev, security, "References and uses", "PackageReference")
+Rel(app, security, "Encrypts/decrypts and signs/validates tokens", "in-process .NET API")
+Rel(security, bcl, "Composes crypto primitives from", "AEAD, HMAC, CSPRNG")
+Rel(security, nuget, "Is published as", "Matios.Security package")
+Rel(idm, security, "Verifies interop in tests", "encrypt here / decrypt there and vice versa")
+
+@enduml

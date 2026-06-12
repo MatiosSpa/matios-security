@@ -1,0 +1,21 @@
+@startuml 02-containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Matios.Security — C4 Level 2 (Containers)
+
+Person(dev, "Consuming developer")
+
+System_Boundary(sec, "Matios.Security (repo matios-security)") {
+    Container(pkg, "Matios.Security.dll", ".NET class library (net10.0)", "ONE assembly / ONE NuGet package. Namespace Jose: Jwe, Jws, SymmetricJoseKey, JoseHeader. Namespace Jwt: JwtBuilder, JwtValidator, JwtClaims (built on Jose)")
+    Container(tests, "Matios.Security.Tests", "xUnit", "RFC 7515 A.1 vector + interop vs Microsoft.IdentityModel + strict negative suite (crit, zip, alg-confusion, duplicates, tampered AAD/tag)")
+}
+
+System_Ext(app, "Consuming .NET application", "References the package; issues/validates tokens")
+System_Ext(bcl, ".NET BCL", "AesGcm / HMACSHA256 / RandomNumberGenerator / System.Text.Json")
+
+Rel(dev, pkg, "Uses", "using Matios.Security.Jose / .Jwt")
+Rel(tests, pkg, "Tests", "xUnit")
+Rel(app, pkg, "Consumes", "PackageReference / ProjectReference")
+Rel(pkg, bcl, "Only dependency", "BCL-only (LOCKED ADR-0001 D2)")
+
+@enduml
