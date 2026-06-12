@@ -1,0 +1,49 @@
+name: Release to NuGet.org
+
+# Publishes via Trusted Publishing (OIDC) — no long-lived API keys anywhere.
+# Requires a Trusted Publishing policy on nuget.org pointing to this repo +
+# this workflow file (release.yml). The temporary API key lives ~1 hour and
+# is requested right before the push.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}   # manual run from the Actions tab, if ever needed
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write     # required: enables GitHub OIDC token issuance
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build (warnings as errors)
+        run: dotnet build src/Matios.Security/Matios.Security.csproj -c Release
+
+      - name: Test
+        run: dotnet test tests/Matios.Security.Tests/Matios.Security.Tests.csproj -c Release
+
+      - name: Pack
+        run: dotnet pack src/Matios.Security/Matios.Security.csproj -c Release -o artifacts
+
+      # OIDC token → temporary nuget.org API key (valid ~1h, single use)
+      - name: NuGet login (Trusted Publishing)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: Matios_Spa   # nuget.org profile name (public), NOT the email
+
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push artifacts/*.nupkg
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
