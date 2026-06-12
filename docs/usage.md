@@ -114,8 +114,16 @@ options.TokenValidationParameters = new TokenValidationParameters
 Or validate manually with `JwtValidator` in your own middleware for full
 control of the whitelists.
 
-## 6. Known interop limitation
+## 6. Known interop limitations (Microsoft.IdentityModel)
 
-`Microsoft.IdentityModel` **cannot issue** JWE with `A256GCM` (its
-`IDX10715`; it only decrypts it). If another .NET system must ISSUE encrypted
-tokens that your platform consumes, have it use this same package.
+Two limitations of Microsoft's stack — both pinned by canary tests in CI:
+
+1. **Cannot issue** JWE with `A256GCM` on any platform (`IDX10715`; it only
+   decrypts it).
+2. **Cannot decrypt** `A256GCM` on Linux/macOS
+   (`algorithmNotSupportedByCryptoProvider`) — Windows only.
+
+Matios.Security issues **and** consumes `dir`+`A256GCM` on every platform
+(the BCL `AesGcm` is cross-platform). If another .NET system must exchange
+encrypted tokens with yours — especially on Linux — have it use this same
+package on both ends.

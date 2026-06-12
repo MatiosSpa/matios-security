@@ -176,7 +176,7 @@ matios-security/
 ## Conformance evidence
 
 - **RFC 7515 Appendix A.1** official HS256 vector (accept + tampered-reject).
-- **Interop**: tokens issued by this library are decrypted and validated by `Microsoft.IdentityModel.JsonWebTokens` (an independent implementation), and vice versa for JWS. A canary test pins Microsoft's `IDX10715` issue-side limitation.
+- **Interop**: tokens issued by this library are decrypted and validated by `Microsoft.IdentityModel.JsonWebTokens` (an independent implementation), and vice versa for JWS. Canary tests pin Microsoft's two limitations: it cannot *issue* `A256GCM` anywhere (`IDX10715`), and it cannot *decrypt* it on Linux/macOS — while this library does both, on every platform.
 - **Strict negative suite**: `zip`, `crit`, algorithm confusion, `none`, non-empty Encrypted Key with `dir`, tampered AAD/tag, duplicate header/claim names, BOM'd headers, oversized tokens, undersized keys.
 - **49 tests, all green, on every CI run.**
 

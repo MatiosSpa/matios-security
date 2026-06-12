@@ -74,9 +74,26 @@ public class InteropMicrosoftIdentityModelTests
         var handler = new JsonWebTokenHandler();
         TokenValidationResult result = await handler.ValidateTokenAsync(token, MicrosoftParameters(withDecryption: true));
 
-        result.IsValid.Should().BeTrue(result.Exception?.ToString());
-        result.Claims["sub"].Should().Be("user-1");
-        Convert.ToInt64(result.Claims["RoleId"]).Should().Be(7L);
+        if (OperatingSystem.IsWindows())
+        {
+            // Windows: Microsoft.IdentityModel CAN decrypt A256GCM — this is
+            // the independent-implementation conformance check for our JWE.
+            result.IsValid.Should().BeTrue(result.Exception?.ToString());
+            result.Claims["sub"].Should().Be("user-1");
+            Convert.ToInt64(result.Claims["RoleId"]).Should().Be(7L);
+        }
+        else
+        {
+            // Linux/macOS: KNOWN Microsoft.IdentityModel limitation — its
+            // crypto provider does not support A256GCM DECRYPTION on
+            // non-Windows ("algorithmNotSupportedByCryptoProvider"), even
+            // though the BCL AesGcm works fine there (all of this library's
+            // own JWE tests pass on Linux). Canary: if a future version
+            // starts supporting it, this branch fails and the full assert
+            // gets unified across platforms.
+            result.IsValid.Should().BeFalse();
+            result.Exception.Should().NotBeNull();
+        }
     }
 
     [Fact]

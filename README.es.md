@@ -150,7 +150,7 @@ Todo lo implementado es conforme y está cubierto por tests; todo lo que queda f
 ## Evidencia de conformidad
 
 - Vector oficial HS256 del **Apéndice A.1 de la RFC 7515** (aceptación + rechazo con firma alterada).
-- **Interop**: los tokens emitidos por esta librería los descifra y valida `Microsoft.IdentityModel.JsonWebTokens` (implementación independiente), y viceversa para JWS. Un test canario fija la limitación `IDX10715` de Microsoft al emitir.
+- **Interop**: los tokens emitidos por esta librería los descifra y valida `Microsoft.IdentityModel.JsonWebTokens` (implementación independiente), y viceversa para JWS. Tests canario fijan las dos limitaciones de Microsoft: no puede *emitir* `A256GCM` en ninguna plataforma (`IDX10715`) y no puede *descifrarlo* en Linux/macOS — mientras esta librería hace ambas cosas, en todas las plataformas.
 - **Suite negativa estricta**: `zip`, `crit`, confusión de algoritmos, `none`, Encrypted Key no vacío con `dir`, AAD/tag alterados, nombres duplicados, headers con BOM, tokens sobredimensionados, claves cortas.
 - **49 tests, todos verdes, en cada corrida del CI.**
 
