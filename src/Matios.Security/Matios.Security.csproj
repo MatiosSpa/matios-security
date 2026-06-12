@@ -10,13 +10,16 @@
 
     <!-- NuGet package identity -->
     <PackageId>Matios.Security</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>Matios SpA</Authors>
     <Company>Matios SpA</Company>
     <Description>Lightweight, dependency-free JOSE (JWE RFC 7516 / JWS RFC 7515) + JWT (RFC 7519) for .NET. BCL-only. MVP: JWE Compact dir+A256GCM (which Microsoft.IdentityModel cannot issue), JWS HS256 and Nested JWT — with a strict, whitelist-driven, anti-oracle API.</Description>
     <PackageTags>jose;jwe;jws;jwt;rfc7516;rfc7515;rfc7519;encryption;token;security;matios</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <!-- nuget.org renders pure markdown only (no embedded HTML), so the
+         package ships PACKAGE.md; the repo README.md keeps the HTML header
+         that GitHub renders. -->
+    <PackageReadmeFile>PACKAGE.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/MatiosSpa/matios-security</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -30,7 +33,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include="PACKAGE.md" Pack="true" PackagePath="\" />
     <None Include="..\..\assets\icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
